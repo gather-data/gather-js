@@ -1,0 +1,39 @@
+{
+  "name": "gather-js",
+  "version": "1.0.0",
+  "description": "Official Javascript SDK for Gather",
+  "main": "dist/index.cjs.js",
+  "repository": "https://github.com/gather-data/gather-js",
+  "author": "Ben Davis <ben@gatherdata.co>",
+  "license": "MIT",
+  "module": "dist/index.esm.js",
+  "browser": "dist/index.umd.js",
+  "devDependencies": {
+    "@types/jest": "24.0.9",
+    "@typescript-eslint/eslint-plugin": "1.4.2",
+    "@typescript-eslint/parser": "1.4.2",
+    "eslint": "5.15.1",
+    "eslint-config-prettier": "4.1.0",
+    "jest": "24.1.0",
+    "jest-fetch-mock": "2.1.1",
+    "rollup": "1.4.1",
+    "rollup-plugin-commonjs": "9.2.1",
+    "rollup-plugin-typescript": "1.0.0",
+    "rollup-plugin-uglify": "6.0.2",
+    "ts-jest": "24.0.0",
+    "ts-node": "8.0.2",
+    "tslib": "1.9.3",
+    "typescript": "3.3.3333"
+  },
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
+    "test": "jest"
+  },
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "whatwg-fetch": "3.0.0"
+  }
+}
