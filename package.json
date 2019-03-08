@@ -7,7 +7,6 @@
   "author": "Ben Davis <ben@gatherdata.co>",
   "license": "MIT",
   "module": "dist/index.esm.js",
-  "browser": "dist/index.umd.js",
   "devDependencies": {
     "@types/jest": "24.0.9",
     "@types/jsdom": "12.2.3",
