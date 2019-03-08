@@ -9,15 +9,16 @@ beforeEach(() => {
 test('Initializes clientId', () => {
     window.gather = {
         clientId: '123',
-        user: [],
-        track: [],
-        page: [],
-        account: [],
+        stubCalls: {
+            user: [],
+            track: [],
+            page: [],
+            account: [],
+        },
     };
 
     require('./index.browser');
 
-    expect(window.gather.track).toBeInstanceOf(Function);
     expect(window.gather.clientId).toEqual('123');
 });
 
@@ -32,21 +33,15 @@ test('Handles queues', () => {
 
     window.gather = {
         clientId: '123',
-        user: [['my_user_id', { first_name: 'Ada' }]],
-        track: [['order.created', { product_name: 'Babbage Machine' }]],
-        page: [
-            [
-                'Getting Started with The Babbage Machine',
-                { url: 'babbage.com' },
-            ],
-        ],
-        account: [['my_account_id', { name: 'Lovelace, Inc' }]],
+        stubCalls: {
+            user: [['my_user_id', { first_name: 'Ada' }]],
+            track: [['order.created', { product_name: 'Babbage Machine' }]],
+            page: [['Getting Started with The Babbage Machine', 'babbage.com']],
+            account: [['my_account_id', { name: 'Lovelace, Inc' }]],
+        },
     };
 
     require('./index.browser');
-
-    expect(window.gather.track).toBeInstanceOf(Function);
-    expect(window.gather.clientId).toEqual('123');
 
     expect(fetchMock.mock.calls.length).toEqual(4);
 

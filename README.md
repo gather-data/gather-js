@@ -1,157 +1,113 @@
+[![Version](https://img.shields.io/npm/v/gather-js.svg)](https://www.npmjs.org/package/gather-js)
 ![travis build](https://travis-ci.org/gather-data/gather-js.svg?branch=master "Travis build")
 
-# Gather.js - Gather client for Javascript
-The Javascript client for Gather makes it dead simple to authenticate your users with any SaaS applications supported by Gather. The main function within the client is `connectApplication` and is all you need authenticate your users within an application you've set up in Gather.
 
+# Gather.js - Gather client for Javascript
+Gather.js provides a simple way to sync your accounts and users and push events to [Gather](https://gatherdata.co) directly from your website. To get started, choose your installation method:
+
+* [Installation](#installation)
+  * [Snippet for Basic Site](#snippet-for-basic-site)
+  * [Snippet for Single Page App](#snippet-for-single-page-app)
+  * [Via NPM](#via-apm)
 * [Usage](#usage)
-* [Example](#example)
-* [API](#api)
 
 ## Installation
-```
+### Install with snippet for basic site
+If you have a basic website that has server-based pages that refresh on each page change, then you'll want to use this method. The snippet you'll include asynchronously loads the `gather.js` client, identifies the account and user, and sends a `page.viewed` event to track usage.
+
+Copy and paste the following snippet into the `<head>` of each page you want to track:
+
+  ```html
+ <!-- Gather.js -->
+ <script>
+   (function(){var gather=window.gather=window.gather||{clientId:null,stubCalls:{user:[],track:[],page:[],account:[]}};if(typeof gather.track==="function"){return}if(gather.invoked){if(window.console&&console.error){console.error("Gather.js snippet included twice.")}return}gather.invoked=true;methods=["account","user","track","page"];gather.factory=function(method){return function(){var args=Array.prototype.slice.call(arguments);gather.stubCalls[method].push(args);return gather}};for(var i=0;i<methods.length;i++){var method=methods[i];gather[method]=gather.factory(method)}
+
+     gather.clientId="GATHER_CLIENT_ID";
+     gather.account("ACCOUNT_ID",{name:"MY ACCOUNT NAME"});
+     gather.user("USER_ID",{
+       first_name:"FIRST NAME",last_name:"LAST_NAME",email:"EMAIL"}
+     );
+     gather.page()})();
+ </script>
+ <script async src='https://unpkg.com/gather-js@latest/dist/index.umd.js'></script>
+ <!-- End Gather.js -->
+
+  ```
+
+- `GATHER_CLIENT_ID` should be replaced with your Client ID, which you can find in your [settings](https://app.gatherdata.co/settings/client)
+- `ACCOUNT_ID` and `MY_ACCOUNT_NAME` should be replaced with the account ID and name for the logged in user. Additional traits can be provided by adding extra keys to the 2nd argument of the `account()` call
+- `USER_ID`, `FIRST_NAME`, `LAST_NAME`, and `EMAIL` should be replaced with the relevant info for the logged in user. Additional traits can be provided by adding extra keys to the 2nd argument of the `user()` call
+
+### Install with snippet for single page app
+If you have a single page app and want to easily install the client via snippet (as opposed to NPM), this is the method for you. The snippet you'll include asynchronously loads the `gather.js` client and makes an instance available via `window.gather`
+
+Copy and paste the following snippet into the `<head>` of your page:
+
+  ```html
+ <!-- Gather.js -->
+ <script>
+   (function(){var gather=window.gather=window.gather||{clientId:null,stubCalls:{user:[],track:[],page:[],account:[]}};if(typeof gather.track==="function"){return}if(gather.invoked){if(window.console&&console.error){console.error("Gather.js snippet included twice.")}return}gather.invoked=true;methods=["account","user","track","page"];gather.factory=function(method){return function(){var args=Array.prototype.slice.call(arguments);gather.stubCalls[method].push(args);return gather}};for(var i=0;i<methods.length;i++){var method=methods[i];gather[method]=gather.factory(method)}
+
+     gather.clientId="GATHER_CLIENT_ID";
+     gather.account("ACCOUNT_ID",{name:"MY ACCOUNT NAME"});
+     gather.user("USER_ID",{
+       first_name:"FIRST NAME",last_name:"LAST_NAME",email:"EMAIL"}
+     );
+     gather.page()})();
+ </script>
+ <script async src='https://unpkg.com/gather-js@latest/dist/index.umd.js'></script>
+ <!-- End Gather.js -->
+
+  ```
+
+- `GATHER_CLIENT_ID` should be replaced with your Client ID, which you can find in your [settings](https://app.gatherdata.co/settings/client)
+
+### Install via NPM
+To install via NPM:
+
+```bash
+npm install --save gather-js
+
+or
+
 yarn add gather-js
 ```
 
-## Usage
-You'll most likely use the client to authenticate your users with an application in Gather and it'll most likely happen when your users click a "Connect with X" in your product.
-
-When `connectApplication` is called, it'll open a browser window to the third-party app that's been configured in the application in Gather. Once the user has either authorized or canceled the request, the promise returned will either throw an error or resolve with the authentication details.
-
-### Step 1: Create a userTokenEndpoint
-As the authentication flow happens in a browser window from your customer's session, we need a way to authenticate the request with Gather to ensure we know it was you who requested a user be added to your application. To do that you need to add a simple endpoint on your server that returns a JSON Web Token signed with your Gather secret key.
-
-For example, here's how you'd do it in Express:
+Create an instance using your `client_id`, which you can find in your [settings](https://app.gatherdata.co/settings/client):
 ```javascript
-app.post('/gather_user_token', (req, res) => {
-  // Using HMAC_256
-  const userToken = jwt.sign(
-    {
-      client_id: GATHER_CLIENT_ID,
-      customer_id: {customer_id_from_request},
-    },
-    GATHER_SECRET_KEY,
-  );
+import Gather from 'gather-js';
 
-  res.setHeader('Content-Type', 'application/json');
-  res.send(
-    JSON.stringify({
-      userToken,
-    }),
-  );
-});
+const gather = new Gather({clientId: 'CLIENT_ID'});
 ```
-
-The endpoint must return a JSON object with three properties:
-- `client_id` - this is your Gather client_id
-- `customer_id` - this is a unique ID you use to refer to the customer that will be authenticated. This most likely will come from the user authenticated with the request to your server.
-
-The JWT should be signed with HMAC_256.
-
-**BEWARE: Make sure that this endpoint requires authentication to ensure no one can create auth request with Gather on your behalf**
-
-### Step 2: Authenticate your customer
-The next step is to use the Gather client to authenticate your user for a particular application.
-
-First we instantiate the Gather client using the `userTokenEndpoint`:
-
-```javascript
-const gather = new Gather({userTokenEndpoint: 'https://mydomain.com/api/gather_user_token'});
-```
-
-The client returned is then authenticated with Gather **for the specific customer_id**. Any operation you perform with the client will only work for that customer.
-
-Then, let's connect them to the application:
-
-```javascript
-const customerConfig = {
-    'some': 'value',
-}
-const {uid, customerConfig} = await gather.connectApplication(applicationId, customerConfig);
-```
-
-- `applicationId` is the ID of the application to authenticate against
-- `customerConfig` is an object you can use to store arbitrary configuration for the customer's authentication in Gather
-
-This will returns a promise that resolves with the object:
-```
-{
-    'uid': '123',
-    'customer_config': {
-        'some': 'value'
-    }
-}
-```
-
-- `uid` - a unique identifier within the external service being authenticated
-- `customer_config` - the configuration set on the authentication for the customer
-
-## Example
-Checkout [the example](https://github.com/ben-davis/gather-js/tree/master/example) to see a working version. This example can also be used to test authentication for an application within Gather.
-
----
 
 ## API
 
-* [Gather(config)](#gatherconfig)
-* [connectApplication(applicationId, options)](#connectapplicationapplicationid-options)
-* [updateCustomerConfig(applicationId, customerConfig)](#updateapplicationconfigapplicationid-customerconfig)
-* [disconnectApplication(applicationId)](#disconnectapplicationapplicationid)
+* [Gather({clientId})](#gatherconfig)
+* [account(accountId, {name, ...})](#gatherconfig)
+* [user(accountId, {first_name, last_name, email, ...})](#gatherconfig)
+* [track(eventType, eventProperties)](#gatherconfig)
+* [page({title, url, ...})](#gatherconfig)
 
-## `Gather(config)`
+## `Gather({clientId})`
+Instantiates a new Gather client using the provided `clientId`
 
-Instantiates a Gather client using the provided `config`. The config options are:
+## `account(accountId, {name, ...})`
+Create or updates an account record identified by `accountId`. The only required field in the account traits is `name`. Additional fields are saved on the account.
 
-`userTokenEndpoint` - a URL to an endpoint on your server that returns a signed JWT for the current user
+## `user(userId, {first_name, last_name, email, ...})`
+Create or updates a user record identified by `userId`. The required fields are `first_name`, `last_name`, and `email`. Additional fields are saved on the user.
 
-## `connectApplication(applicationId, options)`
+**account() must be called before user()**
 
-Connects a user to an application you've set up in Gather. Calling this function opens a browser window that handles the entire OAuth process with the application.
+## `track(eventType, eventProperties)`
+Tracks a new event with type `eventType` and `eventProperties`.
 
-- `applicationId`: **required** the ID of the application to connect the user to
-- `options`: **optional** - Optional config, defined below
+- `eventType` - one of the [built-in type](https://api.gatherdata.co/docs#tag/Event-Types) or any string for a custom event
+- `eventProperties` - properties to store on the event, see [built-in types](https://api.gatherdata.co/docs#tag/Event-Types) for required properties for built-in event types
 
-`options`
-```
-{
-    // Any object data to store on the authentication for the customer
-    customerConfig: {
-        'some': 'value'
-    }
-}
-```
+**account() or user() must be called before calling track()**
 
-Returns a promise that resolves with the following object:
+## `page(title?, url?, extraProperties)`
+Creates a `page.viewed` event for the logged in user. If `title` or `url` are not provided, they are taken from `document.title` and `location.href`.
 
-```
-{
-    uid: '1234',
-    customerConfig: {
-        'some': 'value',
-    }
-}
-```
-
-
-## `updateCustomerConfigConfig(applicationId, customerConfig)`
-
-Updates the customer configuration for an application.
-
-- `applicationId`: **required** the ID of the application to update
-- `customerConfig`: **required** - An object that shall be used to update the customer config
-
-Returns a promise that resolves with the following object:
-
-```
-{
-    uid: '1234',
-    customerConfig: {
-        'some': 'value',
-    }
-}
-```
-
-## `disconnectApplication(applicationId)`
-
-Disconnects an application for the customer
-
-- `applicationId`: **required** the ID of the application to disconnect
+`extraProperties` are stored on the event.

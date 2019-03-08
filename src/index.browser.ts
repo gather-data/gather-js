@@ -5,10 +5,12 @@ import Gather from './gather';
 type stubFunctionCall = (number | string | object)[];
 
 interface GatherStub {
-  user: stubFunctionCall[];
-  account: stubFunctionCall[];
-  page: stubFunctionCall[];
-  track: stubFunctionCall[];
+  stubCalls: {
+    user: stubFunctionCall[];
+    account: stubFunctionCall[];
+    page: stubFunctionCall[];
+    track: stubFunctionCall[];
+  };
   clientId: string;
 }
 
@@ -37,7 +39,7 @@ const gather = new Gather({ clientId });
 const methods = ['account', 'user', 'page', 'track'];
 methods.forEach(method => {
   // @ts-ignore
-  gatherStub[method].forEach((args: stubFunctionCall) => {
+  gatherStub.stubCalls[method].forEach((args: stubFunctionCall) => {
     // @ts-ignore
     gather[method](...args);
   });

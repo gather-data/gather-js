@@ -1,0 +1,61 @@
+<!-- Gather.js -->
+<script>
+  (function(){
+    var gather = window.gather = window.gather || {
+      clientId: null,
+      stubCalls: {
+        user: [],
+        track: [],
+        page: [],
+        account: [],
+      }
+    };
+
+    // If the real Gather.js has already been initialized
+    if (typeof gather.track === 'function') {
+      return
+    };
+
+    // If the snippet was invoked already show an error.
+    if (gather.invoked) {
+      if (window.console && console.error) {
+        console.error('Gather.js snippet included twice.');
+      }
+      return;
+    }
+
+    gather.invoked = true;
+
+    methods = [
+      'account',
+      'user',
+      'track',
+      'page',
+    ];
+
+    gather.factory = function(method) {
+      return function(){
+        var args = Array.prototype.slice.call(arguments);
+        gather.stubCalls[method].push(args);
+        return gather;
+      };
+    };
+
+    for (var i = 0; i < methods.length; i++) {
+      var method = methods[i];
+      gather[method] = gather.factory(method);
+    }
+
+    // Add your Client ID
+    gather.clientId = 'GATHER_CLIENT_ID';
+
+    // Track account and user
+    gather.account('ACCOUNT_ID', {name: 'MY ACCOUNT NAME'});
+    gather.user('USER_ID', {first_name: 'FIRST NAME', last_name: 'LAST_NAME', email: 'EMAIL'});
+
+    // Track the current page
+    gather.page();
+  })();
+</script>
+<script async src='https://unpkg.com/gather-js@latest/dist/index.umd.js'></script>
+<!-- End Gather.js -->

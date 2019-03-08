@@ -8,12 +8,15 @@ interface GatherOptions {
 
 interface GatherInterface {
   clientId: string;
+  // This is to satisfy the browser tests that create a stubbed gather
+  stubCalls?: object;
 }
 
 class Gather implements GatherInterface {
   public clientId: string;
   public accountId?: string;
   public userId?: string;
+  public stubCalls?: object;
 
   public constructor(options: GatherOptions) {
     const { clientId } = options;
@@ -74,10 +77,10 @@ class Gather implements GatherInterface {
     this.post('/events', data);
   }
 
-  public page(title: string, extra: object): void {
+  public page(title?: string, url?: string): void {
     const properties = {
-      ...extra,
-      title,
+      title: title || document.title,
+      url: url || location.href,
     };
 
     this.track('page.viewed', properties);

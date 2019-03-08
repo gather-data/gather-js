@@ -169,10 +169,7 @@ describe('Events', () => {
 
     gather.account('123', {});
     gather.user('123', {});
-    gather.page('Pricing', {
-      url: 'https://charles.babbage.com',
-      title: 'Pricing',
-    });
+    gather.page('Pricing', 'https://charles.babbage.com');
 
     expect(fetchMock.mock.calls.length).toEqual(3);
     expect(fetchMock.mock.calls[2][0]).toEqual(
@@ -184,6 +181,38 @@ describe('Events', () => {
       properties: {
         url: 'https://charles.babbage.com',
         title: 'Pricing',
+      },
+    });
+  });
+
+  test('track page view for current page', () => {
+    fetchMock.mockResponse('{}');
+
+    document.title = 'My Web Page';
+
+    const location = {
+      ...window.location,
+      href: 'https://charles.babbage.com/hello/world#what?is=love',
+    };
+    Object.defineProperty(window, 'location', {
+      writable: true,
+      value: location,
+    });
+
+    gather.account('123', {});
+    gather.user('123', {});
+    gather.page();
+
+    expect(fetchMock.mock.calls.length).toEqual(3);
+    expect(fetchMock.mock.calls[2][0]).toEqual(
+      'https://api.gatherdata.co/events',
+    );
+    expect(JSON.parse(fetchMock.mock.calls[2][1].body)).toEqual({
+      type: 'page.viewed',
+      user: '123',
+      properties: {
+        url: 'http://localhost/',
+        title: 'My Web Page',
       },
     });
   });
