@@ -10,7 +10,7 @@ export default [
     input: 'src/index.browser.ts',
     output: {
       name: 'Gather',
-      file: pkg.browser,
+      file: 'dist/index.umd.js',
       format: 'umd',
     },
     plugins: [commonjs(), resolve(), typescript(), uglify()],

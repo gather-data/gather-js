@@ -1,6 +1,6 @@
 {
   "name": "gather-js",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Official Javascript SDK for Gather",
   "main": "dist/index.cjs.js",
   "repository": "https://github.com/gather-data/gather-js",
@@ -30,7 +30,8 @@
   "scripts": {
     "build": "rollup -c",
     "dev": "rollup -c -w",
-    "test": "jest"
+    "test": "jest",
+    "prepublish": "npm run-script build"
   },
   "files": [
     "dist"
