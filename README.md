@@ -1,5 +1,4 @@
 [![Version](https://img.shields.io/npm/v/gather-js.svg)](https://www.npmjs.org/package/gather-js)
-![travis build](https://travis-ci.org/gather-data/gather-js.svg?branch=master "Travis build")
 [![Build Status](https://travis-ci.org/gather-data/gather-js.svg?branch=master)](https://travis-ci.org/gather-data/gather-js)
 
 
@@ -83,11 +82,11 @@ const gather = new Gather({clientId: 'CLIENT_ID'});
 
 ## API
 
-* [Gather({clientId})](#gatherconfig)
-* [account(accountId, {name, ...})](#gatherconfig)
-* [user(accountId, {first_name, last_name, email, ...})](#gatherconfig)
-* [track(eventType, eventProperties)](#gatherconfig)
-* [page({title, url, ...})](#gatherconfig)
+* [Gather({clientId})](#gatherclientid)
+* [account(accountId, {name, ...})](#accountaccountid-name-)
+* [user(accountId, {first_name, last_name, email, ...})](#useruserid-first_name-last_name-email-)
+* [track(eventType, eventProperties)](#trackeventtype-eventproperties)
+* [page({title, url, ...})](#pagetitle-url-extraproperties)
 
 ## `Gather({clientId})`
 Instantiates a new Gather client using the provided `clientId`
