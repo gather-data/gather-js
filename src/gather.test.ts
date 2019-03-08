@@ -45,7 +45,28 @@ describe('Data syncing', () => {
     expect(gather.accountId).toEqual('123');
   });
 
-  test('test user', () => {
+  test('test user without account', () => {
+    fetchMock.mockResponse('{}');
+
+    gather.user('123', {
+      first_name: 'Ada', // eslint-disable-line
+      last_name: 'Lovelace', // eslint-disable-line
+      email: 'ada@lovelace.com',
+    });
+
+    expect(fetchMock.mock.calls.length).toEqual(1);
+    expect(fetchMock.mock.calls[0][0]).toEqual(
+      'https://api.gatherdata.co/models/user/records',
+    );
+    expect(JSON.parse(fetchMock.mock.calls[0][1].body)).toEqual({
+      id: '123',
+      first_name: 'Ada', // eslint-disable-line
+      last_name: 'Lovelace', // eslint-disable-line
+      email: 'ada@lovelace.com',
+    });
+  });
+
+  test('test user with account', () => {
     fetchMock.mockResponse('{}');
 
     gather.account('123', {});
@@ -66,18 +87,6 @@ describe('Data syncing', () => {
       email: 'ada@lovelace.com',
       account_id: '123', // eslint-disable-line
     });
-  });
-
-  test('test user throws if no account', () => {
-    fetchMock.mockResponse('{}');
-
-    expect(() => {
-      gather.user('123', {
-        first_name: 'Ada', // eslint-disable-line
-        last_name: 'Lovelace', // eslint-disable-line
-        email: 'ada@lovelace.com',
-      });
-    }).toThrow('account() must be called before user()');
   });
 });
 

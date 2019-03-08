@@ -36,10 +36,6 @@ class Gather implements GatherInterface {
   }
 
   public user(userId: string, properties: object): void {
-    if (!this.accountId) {
-      throw new Error('account() must be called before user()');
-    }
-
     const data = {
       ...properties,
       id: userId,
