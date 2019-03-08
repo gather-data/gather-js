@@ -1,5 +1,6 @@
 [![Version](https://img.shields.io/npm/v/gather-js.svg)](https://www.npmjs.org/package/gather-js)
-[![Build Status](https://travis-ci.org/gather-data/gather-js.svg?branch=master)](https://travis-ci.org/gather-data/gather-js.svg?branch=master)
+![travis build](https://travis-ci.org/gather-data/gather-js.svg?branch=master "Travis build")
+[![Build Status](https://travis-ci.org/gather-data/gather-js.svg?branch=master)](https://travis-ci.org/gather-data/gather-js)
 
 
 # Gather.js - Gather client for Javascript
