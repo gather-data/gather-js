@@ -50,7 +50,9 @@ test('Handles queues', () => {
     );
     expect(JSON.parse(fetchMock.mock.calls[0][1].body)).toEqual({
         id: 'my_account_id',
-        name: 'Lovelace, Inc',
+        traits: {
+            name: 'Lovelace, Inc',
+        },
     });
 
     expect(fetchMock.mock.calls[1][0]).toEqual(
@@ -58,8 +60,10 @@ test('Handles queues', () => {
     );
     expect(JSON.parse(fetchMock.mock.calls[1][1].body)).toEqual({
         id: 'my_user_id',
-        first_name: 'Ada',
-        account_id: 'my_account_id',
+        traits: {
+            first_name: 'Ada',
+            account_id: 'my_account_id',
+        },
     });
 
     expect(fetchMock.mock.calls[2][0]).toEqual(

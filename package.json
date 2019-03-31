@@ -1,6 +1,6 @@
 {
   "name": "gather-js",
-  "version": "1.0.5",
+  "version": "1.1.0",
   "description": "Official Javascript SDK for Gather",
   "main": "dist/index.cjs.js",
   "repository": "https://github.com/gather-data/gather-js",

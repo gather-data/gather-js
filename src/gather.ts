@@ -24,10 +24,10 @@ class Gather implements GatherInterface {
     this.clientId = clientId;
   }
 
-  public account(accountId: string, properties: object): void {
+  public account(accountId: string, traits: object): void {
     const data = {
-      ...properties,
       id: accountId,
+      traits,
     };
 
     this.accountId = accountId;
@@ -35,11 +35,13 @@ class Gather implements GatherInterface {
     this.post('/models/account/records', data);
   }
 
-  public user(userId: string, properties: object): void {
+  public user(userId: string, traits: object): void {
     const data = {
-      ...properties,
       id: userId,
-      account_id: this.accountId, // eslint-disable-line
+      traits: {
+        ...traits,
+        account_id: this.accountId, // eslint-disable-line
+      },
     };
 
     this.userId = userId;

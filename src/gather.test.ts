@@ -39,7 +39,9 @@ describe('Data syncing', () => {
 
     expect(JSON.parse(fetchMock.mock.calls[0][1].body)).toEqual({
       id: '123',
-      name: 'Lovelace, Inc',
+      traits: {
+        name: 'Lovelace, Inc',
+      },
     });
 
     expect(gather.accountId).toEqual('123');
@@ -60,9 +62,11 @@ describe('Data syncing', () => {
     );
     expect(JSON.parse(fetchMock.mock.calls[0][1].body)).toEqual({
       id: '123',
-      first_name: 'Ada', // eslint-disable-line
-      last_name: 'Lovelace', // eslint-disable-line
-      email: 'ada@lovelace.com',
+      traits: {
+        first_name: 'Ada', // eslint-disable-line
+        last_name: 'Lovelace', // eslint-disable-line
+        email: 'ada@lovelace.com',
+      },
     });
   });
 
@@ -82,10 +86,12 @@ describe('Data syncing', () => {
     );
     expect(JSON.parse(fetchMock.mock.calls[1][1].body)).toEqual({
       id: '123',
-      first_name: 'Ada', // eslint-disable-line
-      last_name: 'Lovelace', // eslint-disable-line
-      email: 'ada@lovelace.com',
-      account_id: '123', // eslint-disable-line
+      traits: {
+        first_name: 'Ada', // eslint-disable-line
+        last_name: 'Lovelace', // eslint-disable-line
+        email: 'ada@lovelace.com',
+        account_id: '123', // eslint-disable-line
+      },
     });
   });
 });
