@@ -3,7 +3,7 @@
 
 
 # Gather.js - Gather client for Javascript
-Gather.js provides a simple way to sync your accounts and users and push events to [Gather](https://gatherdata.co) directly from your website. To get started, choose your installation method:
+Gather.js provides a simple way to sync your accounts and users and push events to Gather directly from your website. To get started, choose your installation method:
 
 * [Installation](#installation)
   * [Snippet for Basic Site](#snippet-for-basic-site)
@@ -34,7 +34,7 @@ Copy and paste the following snippet into the `<head>` of each page you want to 
 
   ```
 
-- `GATHER_CLIENT_ID` should be replaced with your Client ID, which you can find in your [settings](https://app.gatherdata.co/settings/client)
+- `GATHER_CLIENT_ID` should be replaced with your Client ID, which you can find in your settings
 - `ACCOUNT_ID` and `MY_ACCOUNT_NAME` should be replaced with the account ID and name for the logged in user. Additional traits can be provided by adding extra keys to the 2nd argument of the `account()` call
 - `USER_ID`, `FIRST_NAME`, `LAST_NAME`, and `EMAIL` should be replaced with the relevant info for the logged in user. Additional traits can be provided by adding extra keys to the 2nd argument of the `user()` call
 
@@ -55,7 +55,7 @@ Copy and paste the following snippet into the `<head>` of your page:
 
   ```
 
-- `GATHER_CLIENT_ID` should be replaced with your Client ID, which you can find in your [settings](https://app.gatherdata.co/settings/client)
+- `GATHER_CLIENT_ID` should be replaced with your Client ID, which you can find in your settings
 
 ### Install via NPM
 To install via NPM:
@@ -68,7 +68,7 @@ or
 yarn add gather-js
 ```
 
-Create an instance using your `client_id`, which you can find in your [settings](https://app.gatherdata.co/settings/client):
+Create an instance using your `client_id`, which you can find in your settings:
 ```javascript
 import Gather from 'gather-js';
 
@@ -97,8 +97,8 @@ Create or updates a user record identified by `userId`. The required fields are 
 ## `track(eventType, eventProperties)`
 Tracks a new event with type `eventType` and `eventProperties`.
 
-- `eventType` - one of the [built-in type](https://api.gatherdata.co/docs#tag/Event-Types) or any string for a custom event
-- `eventProperties` - properties to store on the event, see [built-in types](https://api.gatherdata.co/docs#tag/Event-Types) for required properties for built-in event types
+- `eventType` - one of the built-in types or any string for a custom event
+- `eventProperties` - properties to store on the event, see built-in types for required properties for built-in event types
 
 **account() or user() must be called before calling track()**
 
